@@ -19,6 +19,10 @@
 # Modify hostname
 #sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
 
+# 安装 QModem 源中的所有包（强制覆盖 core 包）
+./scripts/feeds update qmodem
+./scripts/feeds install -a -f -p qmodem
+
 # 临时解决Rust问题
 sed -i 's/ci-llvm=true/ci-llvm=false/g' feeds/packages/lang/rust/Makefile
 
