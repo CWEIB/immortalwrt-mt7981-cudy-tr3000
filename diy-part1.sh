@@ -30,5 +30,3 @@ git clone https://github.com/timsaya/openwrt-bandix package/openwrt-bandix
 
 # 添加 QModem feeds
 echo 'src-git qmodem https://github.com/FUjr/modem_feeds.git' >> feeds.conf.default
-./scripts/feeds update qmodem
-./scripts/feeds install -a -p qmodem
