@@ -19,9 +19,17 @@
 # Modify hostname
 #sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
 
-# 安装 QModem 源中的所有包（强制覆盖 core 包）
-./scripts/feeds update qmodem
-./scripts/feeds install -a -f -p qmodem
+# 更新 feeds
+./scripts/feeds update -a
+./scripts/feeds install -a
+
+# 针对性安装 QModem 的组件，避免全量安装导致冲突
+# 这里以安装 "next" 系列（较新）为例，如果你想用稳定版，请去掉 -next 后缀
+./scripts/feeds install -p qmodem luci-app-qmodem-next
+./scripts/feeds install -p qmodem qfirehose
+./scripts/feeds install -p qmodem quectel_CM_5G_M
+# 如果需要短信转发，选一个即可
+./scripts/feeds install -p qmodem sms_forwarder_next
 
 # 临时解决Rust问题
 sed -i 's/ci-llvm=true/ci-llvm=false/g' feeds/packages/lang/rust/Makefile
