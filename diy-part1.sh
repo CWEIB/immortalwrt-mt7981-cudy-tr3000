@@ -30,3 +30,14 @@ git clone https://github.com/timsaya/openwrt-bandix package/openwrt-bandix
 
 # 添加 QModem feeds
 echo 'src-git qmodem https://github.com/FUjr/modem_feeds.git' >> feeds.conf.default
+
+# 关键：先只更新 qmodem，让目录生成
+./scripts/feeds update qmodem
+
+# ===== 在 feeds install 之前物理删除旧架构 =====
+rm -rf feeds/qmodem/luci-app-qmodem
+rm -rf feeds/qmodem/luci-app-qmodem-sms
+rm -rf feeds/qmodem/luci-app-qmodem-mwam
+rm -rf feeds/qmodem/luci-app-qmodem-ttl
+rm -rf feeds/qmodem/application/ndisc6
+rm -rf feeds/qmodem/application/rdisc6
