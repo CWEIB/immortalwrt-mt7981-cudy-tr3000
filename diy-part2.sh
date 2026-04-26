@@ -26,24 +26,20 @@ rm -rf package/mtk/applications/5g-modem
 rm -rf feeds/packages/utils/sms-tool
 rm -rf feeds/telephony/net/sendat
 
+./scripts/feeds update -a
+
+# 修复依赖
+find feeds/qmodem/ -name Makefile -exec sed -i 's/+kmod-mhi-wwan//g' {} +
+
 # 3. 移除 qmodem 中不使用的冗余 LuCI 插件（只留 next 版）
 # 这一步能大幅减少生成 ipk 时的磁盘占用和 js 文件冲突
 find feeds/qmodem/luci/ -maxdepth 1 -type d ! -name "luci-app-qmodem-next" -exec rm -rf {} +
 
-# 4. 修复依赖警告
-sed -i 's/+kmod-mhi-wwan//g' feeds/qmodem/qmodem/Makefile
+# 强制安装 QModem 包
+./scripts/feeds install -f -p qmodem qmodem qfirehose quectel_CM_5G_M luci-app-qmodem-next sms_forwarder_next
 
-# 更新 feeds
-./scripts/feeds update -a
+# 安装其它包
 ./scripts/feeds install -a
-
-# 针对性安装 QModem 的组件，避免全量安装导致冲突
-# 这里以安装 "next" 系列（较新）为例，如果你想用稳定版，请去掉 -next 后缀
-./scripts/feeds install -p qmodem luci-app-qmodem-next
-./scripts/feeds install -p qmodem qfirehose
-./scripts/feeds install -p qmodem quectel_CM_5G_M
-# 如果需要短信转发，选一个即可
-./scripts/feeds install -p qmodem sms_forwarder_next
 
 # 临时解决Rust问题
 sed -i 's/ci-llvm=true/ci-llvm=false/g' feeds/packages/lang/rust/Makefile
