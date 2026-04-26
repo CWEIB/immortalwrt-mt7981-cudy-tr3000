@@ -19,6 +19,20 @@
 # Modify hostname
 #sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
 
+# 1. 删除所有可能导致冲突的内置 MTK 5G 驱动
+rm -rf package/mtk/applications/5g-modem
+
+# 2. 移除重复的工具定义
+rm -rf feeds/packages/utils/sms-tool
+rm -rf feeds/telephony/net/sendat
+
+# 3. 移除 qmodem 中不使用的冗余 LuCI 插件（只留 next 版）
+# 这一步能大幅减少生成 ipk 时的磁盘占用和 js 文件冲突
+find feeds/qmodem/luci/ -maxdepth 1 -type d ! -name "luci-app-qmodem-next" -exec rm -rf {} +
+
+# 4. 修复依赖警告
+sed -i 's/+kmod-mhi-wwan//g' feeds/qmodem/qmodem/Makefile
+
 # 更新 feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
