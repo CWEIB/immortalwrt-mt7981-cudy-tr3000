@@ -29,11 +29,4 @@ git clone https://github.com/timsaya/luci-app-bandix package/luci-app-bandix
 git clone https://github.com/timsaya/openwrt-bandix package/openwrt-bandix
 
 # 添加 QModem feeds
-echo >> feeds.conf.default
-sed -i '$a src-git modem https://github.com/kiddin9/kwrt-packages.git' feeds.conf.default
-echo 'src-git qmodem https://github.com/FUjr/QModem.git;main' >> feeds.conf.default
-./scripts/feeds update qmodem
-./scripts/feeds install -a -p qmodem
-./scripts/feeds update -a && ./scripts/feeds install -a
-./scripts/feeds install -a -f -p qmodem
-./scripts/feeds update -a && ./scripts/feeds install -a
+echo 'src-git passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main' >> feeds.conf.default
