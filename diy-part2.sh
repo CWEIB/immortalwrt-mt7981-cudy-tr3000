@@ -14,6 +14,23 @@
 sed -i 's/192.168.1.1/192.168.8.1/g' package/base-files/files/bin/config_generate
 sed -i 's/192.168.1./192.168.8./g' package/base-files/files/bin/config_generate
 
+# 1. 移除不需要或有问题的包（避免编译中报错）
+rm -rf package/feeds/packages/exim
+rm -rf package/feeds/packages/onionshare-cli
+rm -rf package/feeds/packages/python-zope-event
+rm -rf package/feeds/packages/python-zope-interface
+rm -rf package/feeds/packages/python-gevent
+rm -rf package/feeds/packages/python-twisted
+
+# 2. ndisc6 处理：移除 QModem feed 中的重复版本，优先使用源码自带版本
+rm -rf package/feeds/qmodem/ndisc6
+
+# 3. 修复 qmodem 的 kmod-mhi-wwan 依赖警告 (改为可选依赖)
+QMODEM_MK="package/feeds/qmodem/qmodem/Makefile"
+if [ -f "$QMODEM_MK" ]; then
+    sed -i 's/DEPENDS:=.*+kmod-mhi-wwan/# &/g' "$QMODEM_MK"
+    sed -i 's/+kmod-mhi-wwan/+PACKAGE_luci-app-qmodem_GENERIC_MHI_PCIe_DRIVER:kmod-mhi-wwan/g' "$QMODEM_MK"
+fi
 # Modify default theme
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 
