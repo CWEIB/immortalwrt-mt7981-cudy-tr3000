@@ -33,6 +33,10 @@ on:
         required: false
         type: boolean
         default: false
+      custom_router_ip:
+        description: "请设置路由器的管理地址 格式:192.168.x.1 或 10.x.x.1"
+        required: true
+        default: "192.168.100.1"
       release:
         description: '是否发布编译产物到 Release'
         required: false
@@ -66,7 +70,14 @@ jobs:
     steps:
       - name: 🙌 Checkout
         uses: actions/checkout@v4
-
+        
+      - name: Save Custom Router IP into OpenWrt files
+        run: |
+          mkdir -p "${{ github.workspace }}/custom"
+          echo "${{ github.event.inputs.custom_router_ip }}" > "${{ github.workspace }}/custom/custom_router_ip.txt"
+          echo "您设置的路由器管理地址是:${{ github.event.inputs.custom_router_ip }}"
+          # 后续步骤会将该文件映射到路由器/etc/config/custom_router_ip.txt 以便用于开机脚本99-custom.sh读取用户设置的ip
+      
       - name: 🛠️ Init Environment
         run: |
           sudo apt-get update -qq
@@ -284,6 +295,11 @@ jobs:
           EOF
 
           echo "status=success" >> $GITHUB_OUTPUT
+      - name: Create info
+        run: |
+          custom_router_ip="${{ github.event.inputs.custom_router_ip }}"
+          extra_content_ip="#### 管理地址 $custom_router_ip"
+          echo -e "\n $extra_content_ip" >> ${{ github.workspace }}/mediatek-filogic/info.md
 
       - name: 📤 Upload to Release
         uses: softprops/action-gh-release@v2
