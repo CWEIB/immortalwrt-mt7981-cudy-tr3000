@@ -36,7 +36,7 @@ on:
       custom_router_ip:
         description: "请设置路由器的管理地址 格式:192.168.x.1 或 10.x.x.1"
         required: true
-        default: "192.168.100.1"
+        default: "192.168.8.1"
       release:
         description: '是否发布编译产物到 Release'
         required: false
