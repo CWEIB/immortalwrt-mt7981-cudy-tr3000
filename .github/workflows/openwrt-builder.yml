@@ -33,10 +33,16 @@ on:
         required: false
         type: boolean
         default: false
-      custom_router_ip:
-        description: "请设置路由器的管理地址 格式:192.168.x.1 或 10.x.x.1"
-        required: true
-        default: "192.168.8.1"
+      enable_qmodem_next:
+        description: '启用 QModem Next (新版)'
+        required: false
+        default: false
+        type: boolean
+      enable_qmodem:
+        description: '启用 QModem (旧版)'
+        required: false
+        default: false
+        type: boolean
       release:
         description: '是否发布编译产物到 Release'
         required: false
@@ -70,14 +76,7 @@ jobs:
     steps:
       - name: 🙌 Checkout
         uses: actions/checkout@v4
-        
-      - name: Save Custom Router IP into OpenWrt files
-        run: |
-          mkdir -p "${{ github.workspace }}/custom"
-          echo "${{ github.event.inputs.custom_router_ip }}" > "${{ github.workspace }}/custom/custom_router_ip.txt"
-          echo "您设置的路由器管理地址是:${{ github.event.inputs.custom_router_ip }}"
-          # 后续步骤会将该文件映射到路由器/etc/config/custom_router_ip.txt 以便用于脚本diy-part2.sh读取用户设置的ip
-      
+
       - name: 🛠️ Init Environment
         run: |
           sudo apt-get update -qq
@@ -274,7 +273,6 @@ jobs:
         run: |
           BUILD_TIME=$(date +"%Y%m%d-%H%M")
           RELEASE_TAG="ImmortalWrt-${BUILD_TIME}"
-          custom_router_ip="${{ github.event.inputs.custom_router_ip }}"
           echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
 
           cat > release.txt << EOF
@@ -283,7 +281,6 @@ jobs:
           **🏷️ Release:** $RELEASE_TAG
           **🌿 Branch:** $REPO_BRANCH
           **📱 Device:** ${DEVICE_INPUT}
-          **🌐 Default IP:** ${custom_router_ip}
           **📅 Build Date:** $(date +"%Y-%m-%d %H:%M:%S")
           **🔨 Compiler:** GCC with ccache
 
