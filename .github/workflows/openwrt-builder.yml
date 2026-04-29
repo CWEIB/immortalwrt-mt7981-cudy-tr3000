@@ -274,6 +274,7 @@ jobs:
         run: |
           BUILD_TIME=$(date +"%Y%m%d-%H%M")
           RELEASE_TAG="ImmortalWrt-${BUILD_TIME}"
+          custom_router_ip="${{ github.event.inputs.custom_router_ip }}"
           echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
 
           cat > release.txt << EOF
@@ -282,6 +283,7 @@ jobs:
           **🏷️ Release:** $RELEASE_TAG
           **🌿 Branch:** $REPO_BRANCH
           **📱 Device:** ${DEVICE_INPUT}
+          **🌐 Default IP:** ${custom_router_ip}
           **📅 Build Date:** $(date +"%Y-%m-%d %H:%M:%S")
           **🔨 Compiler:** GCC with ccache
 
@@ -295,11 +297,6 @@ jobs:
           EOF
 
           echo "status=success" >> $GITHUB_OUTPUT
-      - name: Create info
-        run: |
-          custom_router_ip="${{ github.event.inputs.custom_router_ip }}"
-          extra_content_ip="#### 管理地址 $custom_router_ip"
-          echo -e "\n $extra_content_ip" >> ${{ github.workspace }}/mediatek-filogic/info.md
 
       - name: 📤 Upload to Release
         uses: softprops/action-gh-release@v2
