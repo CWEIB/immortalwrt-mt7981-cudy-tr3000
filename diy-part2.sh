@@ -16,12 +16,15 @@ sed -i 's/192.168.1./192.168.8./g' package/base-files/files/bin/config_generate
 
 # 1. 彻底移除报错的 fibocom_QMI_WWAN 驱动目录
 # 这个驱动版本过旧，不支持 6.6 内核，且与 QModem 提供的驱动功能重复
+echo "正在清理不兼容的内置 5G 驱动..."
+rm -rf package/mtk/applications/5g-modem/quectel_QMI_WWAN
 rm -rf package/mtk/applications/5g-modem/fibocom_QMI_WWAN
+rm -rf package/mtk/applications/5g-modem/quectel_MHI
 
 # 2. 移除重复的 5G 驱动包（避免多处源码冲突）
-rm -rf package/feeds/qmodem/fibocom_QMI_WWAN
-rm -rf package/feeds/qmodem/quectel_QMI_WWAN
-rm -rf package/feeds/qmodem/quectel_MHI
+# rm -rf package/feeds/qmodem/fibocom_QMI_WWAN
+# rm -rf package/feeds/qmodem/quectel_QMI_WWAN
+# rm -rf package/feeds/qmodem/quectel_MHI
 
 # 1. 移除不需要或有问题的包（避免编译中报错）
 rm -rf package/feeds/packages/exim
