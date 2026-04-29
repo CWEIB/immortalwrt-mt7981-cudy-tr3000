@@ -16,6 +16,20 @@ sed -i 's/192.168.1.1/192.168.8.1/g' package/base-files/files/bin/config_generat
 
 # ---------- QModem 6.6 驱动补丁函数 ----------
 # ⭐ 修复 QMI WWAN 驱动 Linux 6.6 兼容性 (所有厂商驱动)
+echo "修复依赖警告..."
+
+# 1. 移除不需要的有问题的包
+rm -rf package/feeds/packages/exim 2>/dev/null || true
+rm -rf package/feeds/packages/onionshare-cli 2>/dev/null || true
+rm -rf package/feeds/packages/python-zope-event 2>/dev/null || true
+rm -rf package/feeds/packages/python-zope-interface 2>/dev/null || true
+
+# 2. ndisc6 处理：优先使用源码自带版本，移除 QModem feed 中的重复版本避免冲突
+# padavanonly 源码在 package/mtk/applications/5g-modem/ndisc 已包含 ndisc6
+rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
+# 移除 kmod-mhi-wwan 依赖
+find . -path "*qmodem*Makefile" -exec sed -i 's/+\?kmod-mhi-wwan//g' {} \; 2>/dev/null || true
+
 fix_qmi_driver() {
   local SOURCE_FILE="$1"
   if [ -f "$SOURCE_FILE" ]; then
@@ -60,11 +74,7 @@ fix_qmi_driver() {
   fi
 
 # ---------- 清理有问题的包 ----------
-if [ -d "package/feeds/qmodem" ]; then
-  rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
-  # 移除 kmod-mhi-wwan 依赖
-  # find . -path "*qmodem*Makefile" -exec sed -i 's/+\?kmod-mhi-wwan//g' {} \; 2>/dev/null || true
-fi
+
 
 # Modify default theme
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
