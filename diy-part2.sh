@@ -11,7 +11,7 @@
 #
 
 # Modify default IP
-sed -i 's/192.168.1.1/192.168.8.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.6.1/192.168.8.1/g' package/base-files/files/bin/config_generate
 
 
 # ---------- QModem 6.6 驱动补丁函数 ----------
