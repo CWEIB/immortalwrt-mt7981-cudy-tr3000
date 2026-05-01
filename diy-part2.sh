@@ -78,12 +78,12 @@ rm -rf package/feeds/packages/python-twisted 2>/dev/null || true
 #   fix_qmi_driver "package/mtk/applications/5g-modem/simcom_QMI_WWAN/qmi_wwan_s.c"
 #   fix_qmi_driver "package/mtk/applications/5g-modem/simcom_QMI_WWAN/src/qmi_wwan_s.c"
   
-#   # 修复 feeds 中的 QModem 驱动 (如果存在且已启用)
-#   if [ -d "feeds/qmodem" ]; then
-#     for driver_file in $(find feeds/qmodem -name "*.c" -type f 2>/dev/null | xargs grep -l "u64_stats_fetch_begin_irq\|memcpy.*dev_addr" 2>/dev/null || true); do
-#       fix_qmi_driver "$driver_file"
-#     done
-#   fi
+  # 修复 feeds 中的 QModem 驱动 (如果存在且已启用)
+  if [ -d "feeds/qmodem" ]; then
+    for driver_file in $(find feeds/qmodem -name "*.c" -type f 2>/dev/null | xargs grep -l "u64_stats_fetch_begin_irq\|memcpy.*dev_addr" 2>/dev/null || true); do
+      fix_qmi_driver "$driver_file"
+    done
+  fi
 
 # ---------- 清理有问题的包 ----------
 
