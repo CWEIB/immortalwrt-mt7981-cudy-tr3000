@@ -50,7 +50,8 @@ fix_qmi_driver() {
     # 修复 u64_stats API 变更 (Linux 6.x 移除了 _irq 后缀)
      sed -i 's/u64_stats_fetch_begin_irq/u64_stats_fetch_begin/g' "$SOURCE_FILE"
      sed -i 's/u64_stats_fetch_retry_irq/u64_stats_fetch_retry/g' "$SOURCE_FILE"
-      
+
+     sed -i 's/memcpy *(qmap_net->dev_addr, *real_dev->dev_addr, *ETH_ALEN);/memcpy(qmap_net->dev_addr, (void *)real_dev->dev_addr, ETH_ALEN);/g' "$SOURCE_FILE"
      # 修复 dev_addr 只读问题 (Linux 5.15+ dev_addr 变为 const)
      # 方法1: 使用 eth_hw_addr_set (推荐)
      # if grep -q 'memcpy.*qmap_net->dev_addr.*real_dev->dev_addr' "$SOURCE_FILE"; then
