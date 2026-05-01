@@ -42,29 +42,29 @@ fi
 rm -rf package/feeds/packages/python-gevent 2>/dev/null || true
 rm -rf package/feeds/packages/python-twisted 2>/dev/null || true
 
-# fix_qmi_driver() {
-#   local SOURCE_FILE="$1"
-#   if [ -f "$SOURCE_FILE" ]; then
-#     echo "🔧 修复驱动: $SOURCE_FILE"
+fix_qmi_driver() {
+  local SOURCE_FILE="$1"
+  if [ -f "$SOURCE_FILE" ]; then
+    echo "🔧 修复驱动: $SOURCE_FILE"
       
-#     # 修复 u64_stats API 变更 (Linux 6.x 移除了 _irq 后缀)
-#      sed -i 's/u64_stats_fetch_begin_irq/u64_stats_fetch_begin/g' "$SOURCE_FILE"
-#      sed -i 's/u64_stats_fetch_retry_irq/u64_stats_fetch_retry/g' "$SOURCE_FILE"
+    # 修复 u64_stats API 变更 (Linux 6.x 移除了 _irq 后缀)
+     sed -i 's/u64_stats_fetch_begin_irq/u64_stats_fetch_begin/g' "$SOURCE_FILE"
+     sed -i 's/u64_stats_fetch_retry_irq/u64_stats_fetch_retry/g' "$SOURCE_FILE"
       
-#      # 修复 dev_addr 只读问题 (Linux 5.15+ dev_addr 变为 const)
-#      # 方法1: 使用 eth_hw_addr_set (推荐)
-#      if grep -q 'memcpy.*qmap_net->dev_addr.*real_dev->dev_addr' "$SOURCE_FILE"; then
-#         sed -i 's/memcpy[[:space:]]*(qmap_net->dev_addr,[[:space:]]*real_dev->dev_addr,[[:space:]]*ETH_ALEN);/eth_hw_addr_set(qmap_net, real_dev->dev_addr);/g' "$SOURCE_FILE"
-#      fi
-#      # 方法2: 处理其他可能的 memcpy 到 dev_addr 的情况
-#      if grep -q 'memcpy.*->dev_addr' "$SOURCE_FILE"; then
-#      # 使用 dev_addr_set 作为备用方案
-#        sed -i 's/memcpy[[:space:]]*(\([^,]*\)->dev_addr,[[:space:]]*\([^,]*\),[[:space:]]*ETH_ALEN);/dev_addr_set(\1, \2);/g' "$SOURCE_FILE" 2>/dev/null || true
-#      fi
+     # 修复 dev_addr 只读问题 (Linux 5.15+ dev_addr 变为 const)
+     # 方法1: 使用 eth_hw_addr_set (推荐)
+     # if grep -q 'memcpy.*qmap_net->dev_addr.*real_dev->dev_addr' "$SOURCE_FILE"; then
+     #    sed -i 's/memcpy[[:space:]]*(qmap_net->dev_addr,[[:space:]]*real_dev->dev_addr,[[:space:]]*ETH_ALEN);/eth_hw_addr_set(qmap_net, real_dev->dev_addr);/g' "$SOURCE_FILE"
+     # fi
+     # 方法2: 处理其他可能的 memcpy 到 dev_addr 的情况
+     # if grep -q 'memcpy.*->dev_addr' "$SOURCE_FILE"; then
+     # # 使用 dev_addr_set 作为备用方案
+     #   sed -i 's/memcpy[[:space:]]*(\([^,]*\)->dev_addr,[[:space:]]*\([^,]*\),[[:space:]]*ETH_ALEN);/dev_addr_set(\1, \2);/g' "$SOURCE_FILE" 2>/dev/null || true
+     # fi
       
-#      echo "✅ 驱动修复完成: $SOURCE_FILE"
-#   fi
-# }
+     echo "✅ 驱动修复完成: $SOURCE_FILE"
+  fi
+}
   
 #   # 修复 Fibocom QMI WWAN 驱动
 #   fix_qmi_driver "package/mtk/applications/5g-modem/fibocom_QMI_WWAN/qmi_wwan_f.c"
