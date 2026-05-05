@@ -24,11 +24,6 @@ rm -rf package/feeds/packages/onionshare-cli 2>/dev/null || true
 rm -rf package/feeds/packages/python-zope-event 2>/dev/null || true
 rm -rf package/feeds/packages/python-zope-interface 2>/dev/null || true
 
-# 2. ndisc6 处理：优先使用源码自带版本，移除 QModem feed 中的重复版本避免冲突
-# padavanonly 源码在 package/mtk/applications/5g-modem/ndisc 已包含 ndisc6
-rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
-find . -path "*qmodem*Makefile" -exec sed -i 's/+\?kmod-mhi-wwan//g' {} \; 2>/dev/null || true
-
 # 3. 修复 kmod-mhi-wwan 依赖 - 修改 qmodem Makefile 移除该依赖
 # qmodem 包默认使用 vendor 驱动 (pcie_mhi)，不需要 generic mhi-wwan
 QMODEM_MK="package/feeds/qmodem/qmodem/Makefile"
@@ -87,6 +82,11 @@ if [ -d "feeds/qmodem" ]; then
     fix_qmi_driver "$driver_file"
   done
 fi
+
+# 2. ndisc6 处理：优先使用源码自带版本，移除 QModem feed 中的重复版本避免冲突
+# padavanonly 源码在 package/mtk/applications/5g-modem/ndisc 已包含 ndisc6
+rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
+find . -path "*qmodem*Makefile" -exec sed -i 's/+\?kmod-mhi-wwan//g' {} \; 2>/dev/null || true
 
  # 修复 mt_hwifi
 [ -f "package/mtk/drivers/mt_hwifi/Makefile" ] && sed -i 's/+kmod-mt_wifi_osal//g' "package/mtk/drivers/mt_hwifi/Makefile" || true
