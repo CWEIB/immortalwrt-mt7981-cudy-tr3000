@@ -27,6 +27,7 @@ rm -rf package/feeds/packages/python-zope-interface 2>/dev/null || true
 # 2. ndisc6 处理：优先使用源码自带版本，移除 QModem feed 中的重复版本避免冲突
 # padavanonly 源码在 package/mtk/applications/5g-modem/ndisc 已包含 ndisc6
 rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
+find . -path "*qmodem*Makefile" -exec sed -i 's/+\?kmod-mhi-wwan//g' {} \; 2>/dev/null || true
 
 # 3. 修复 kmod-mhi-wwan 依赖 - 修改 qmodem Makefile 移除该依赖
 # qmodem 包默认使用 vendor 驱动 (pcie_mhi)，不需要 generic mhi-wwan
@@ -87,6 +88,8 @@ if [ -d "feeds/qmodem" ]; then
   done
 fi
 
+ # 修复 mt_hwifi
+[ -f "package/mtk/drivers/mt_hwifi/Makefile" ] && sed -i 's/+kmod-mt_wifi_osal//g' "package/mtk/drivers/mt_hwifi/Makefile" || true
 # ---------- 清理有问题的包 ----------
 
 
