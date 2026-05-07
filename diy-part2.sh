@@ -27,17 +27,17 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:
 
 # ---------- QModem 6.6 驱动补丁函数 ----------
 # ⭐ 修复 QMI WWAN 驱动 Linux 6.6 兼容性 (所有厂商驱动)
-echo "修复依赖警告..."
+# echo "修复依赖警告..."
 
 # 1. 移除不需要的有问题的包
-rm -rf package/feeds/packages/exim 2>/dev/null || true
-rm -rf package/feeds/packages/onionshare-cli 2>/dev/null || true
-rm -rf package/feeds/packages/python-zope-event 2>/dev/null || true
-rm -rf package/feeds/packages/python-zope-interface 2>/dev/null || true
+# rm -rf package/feeds/packages/exim 2>/dev/null || true
+# rm -rf package/feeds/packages/onionshare-cli 2>/dev/null || true
+# rm -rf package/feeds/packages/python-zope-event 2>/dev/null || true
+# rm -rf package/feeds/packages/python-zope-interface 2>/dev/null || true
 
 # 2. ndisc6 处理：优先使用源码自带版本，移除 QModem feed 中的重复版本避免冲突
 # padavanonly 源码在 package/mtk/applications/5g-modem/ndisc 已包含 ndisc6
-rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
+# rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
 
 # 3. 修复 kmod-mhi-wwan 依赖 - 修改 qmodem Makefile 移除该依赖
 # qmodem 包默认使用 vendor 驱动 (pcie_mhi)，不需要 generic mhi-wwan
@@ -50,8 +50,8 @@ rm -rf package/feeds/qmodem/ndisc6 2>/dev/null || true
 # fi
 
 # 移除有问题的依赖包 Makefile 定义或禁用它们
-rm -rf package/feeds/packages/python-gevent 2>/dev/null || true
-rm -rf package/feeds/packages/python-twisted 2>/dev/null || true
+# rm -rf package/feeds/packages/python-gevent 2>/dev/null || true
+# rm -rf package/feeds/packages/python-twisted 2>/dev/null || true
 
 # fix_qmi_driver() {
 #   local SOURCE_FILE="$1"
@@ -78,58 +78,58 @@ rm -rf package/feeds/packages/python-twisted 2>/dev/null || true
 #      echo "✅ 驱动修复完成: $SOURCE_FILE"
 #   fi
 # }
-fix_qmi_driver() {
-  local SOURCE_FILE="$1"
-  if [ -f "$SOURCE_FILE" ]; then
-    echo "🔧 修复驱动: $SOURCE_FILE"
+# fix_qmi_driver() {
+#   local SOURCE_FILE="$1"
+#   if [ -f "$SOURCE_FILE" ]; then
+#     echo "🔧 修复驱动: $SOURCE_FILE"
 
-    # 1. u64_stats API 修复
-    sed -i 's/u64_stats_fetch_begin_irq/u64_stats_fetch_begin/g' "$SOURCE_FILE"
-    sed -i 's/u64_stats_fetch_retry_irq/u64_stats_fetch_retry/g' "$SOURCE_FILE"
+#     # 1. u64_stats API 修复
+#     sed -i 's/u64_stats_fetch_begin_irq/u64_stats_fetch_begin/g' "$SOURCE_FILE"
+#     sed -i 's/u64_stats_fetch_retry_irq/u64_stats_fetch_retry/g' "$SOURCE_FILE"
 
-    # 2. 修 memcpy(dev_addr)
-    sed -i 's/memcpy[[:space:]]*(\([^,]*\)->dev_addr,[[:space:]]*\([^,]*\),[[:space:]]*ETH_ALEN);/eth_hw_addr_set(\1, \2);/g' "$SOURCE_FILE" 2>/dev/null || true
+#     # 2. 修 memcpy(dev_addr)
+#     sed -i 's/memcpy[[:space:]]*(\([^,]*\)->dev_addr,[[:space:]]*\([^,]*\),[[:space:]]*ETH_ALEN);/eth_hw_addr_set(\1, \2);/g' "$SOURCE_FILE" 2>/dev/null || true
 
-    # 3. ⭐⭐关键修复：在 alloc_etherdev 后强制设置 MAC⭐⭐
-    if grep -q "alloc_etherdev" "$SOURCE_FILE"; then
-      sed -i '/alloc_etherdev/a\
-\ \ \ \ eth_hw_addr_random(net);' "$SOURCE_FILE"
-      echo "$(date '+%F %T') [MAC-INIT-FIX] Insert eth_hw_addr_random after alloc_etherdev in: $SOURCE_FILE"
-    fi
+#     # 3. ⭐⭐关键修复：在 alloc_etherdev 后强制设置 MAC⭐⭐
+#     if grep -q "alloc_etherdev" "$SOURCE_FILE"; then
+#       sed -i '/alloc_etherdev/a\
+# \ \ \ \ eth_hw_addr_random(net);' "$SOURCE_FILE"
+#       echo "$(date '+%F %T') [MAC-INIT-FIX] Insert eth_hw_addr_random after alloc_etherdev in: $SOURCE_FILE"
+#     fi
 
-    # 4. 确保包含头文件
-    if ! grep -q "etherdevice.h" "$SOURCE_FILE"; then
-      sed -i '1i #include <linux/etherdevice.h>' "$SOURCE_FILE"
-    fi
+#     # 4. 确保包含头文件
+#     if ! grep -q "etherdevice.h" "$SOURCE_FILE"; then
+#       sed -i '1i #include <linux/etherdevice.h>' "$SOURCE_FILE"
+#     fi
 
-    echo "✅ 驱动修复完成: $SOURCE_FILE"
-  fi
-}
+#     echo "✅ 驱动修复完成: $SOURCE_FILE"
+#   fi
+# }
   
-# 修复 Fibocom QMI WWAN 驱动
-fix_qmi_driver "package/mtk/applications/5g-modem/fibocom_QMI_WWAN/qmi_wwan_f.c"
-fix_qmi_driver "package/mtk/applications/5g-modem/fibocom_QMI_WWAN/src/qmi_wwan_f.c"
+# # 修复 Fibocom QMI WWAN 驱动
+# fix_qmi_driver "package/mtk/applications/5g-modem/fibocom_QMI_WWAN/qmi_wwan_f.c"
+# fix_qmi_driver "package/mtk/applications/5g-modem/fibocom_QMI_WWAN/src/qmi_wwan_f.c"
 
-# 修复 Quectel QMI WWAN 驱动 (如果存在)
-fix_qmi_driver "package/mtk/applications/5g-modem/quectel_QMI_WWAN/qmi_wwan_q.c"
-fix_qmi_driver "package/mtk/applications/5g-modem/quectel_QMI_WWAN/src/qmi_wwan_q.c"
+# # 修复 Quectel QMI WWAN 驱动 (如果存在)
+# fix_qmi_driver "package/mtk/applications/5g-modem/quectel_QMI_WWAN/qmi_wwan_q.c"
+# fix_qmi_driver "package/mtk/applications/5g-modem/quectel_QMI_WWAN/src/qmi_wwan_q.c"
 
-# 修复 Simcom QMI WWAN 驱动 (如果存在)
-fix_qmi_driver "package/mtk/applications/5g-modem/simcom_QMI_WWAN/qmi_wwan_s.c"
-fix_qmi_driver "package/mtk/applications/5g-modem/simcom_QMI_WWAN/src/qmi_wwan_s.c"
+# # 修复 Simcom QMI WWAN 驱动 (如果存在)
+# fix_qmi_driver "package/mtk/applications/5g-modem/simcom_QMI_WWAN/qmi_wwan_s.c"
+# fix_qmi_driver "package/mtk/applications/5g-modem/simcom_QMI_WWAN/src/qmi_wwan_s.c"
 
-# 修复 feeds 中的 QModem 驱动 (如果存在且已启用)
-if [ -d "feeds/qmodem" ]; then
-  for driver_file in $(find feeds/qmodem -name "*.c" -type f 2>/dev/null | xargs grep -l "u64_stats_fetch_begin_irq\|memcpy.*dev_addr" 2>/dev/null || true); do
-    fix_qmi_driver "$driver_file"
-  done
-fi
+# # 修复 feeds 中的 QModem 驱动 (如果存在且已启用)
+# if [ -d "feeds/qmodem" ]; then
+#   for driver_file in $(find feeds/qmodem -name "*.c" -type f 2>/dev/null | xargs grep -l "u64_stats_fetch_begin_irq\|memcpy.*dev_addr" 2>/dev/null || true); do
+#     fix_qmi_driver "$driver_file"
+#   done
+# fi
 
 
 # find . -path "*qmodem*Makefile" -exec sed -i 's/+\?kmod-mhi-wwan//g' {} \; 2>/dev/null || true
 
  # 修复 mt_hwifi
-[ -f "package/mtk/drivers/mt_hwifi/Makefile" ] && sed -i 's/+kmod-mt_wifi_osal//g' "package/mtk/drivers/mt_hwifi/Makefile" || true
+# [ -f "package/mtk/drivers/mt_hwifi/Makefile" ] && sed -i 's/+kmod-mt_wifi_osal//g' "package/mtk/drivers/mt_hwifi/Makefile" || true
 # ---------- 清理有问题的包 ----------
 
 
