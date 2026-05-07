@@ -13,6 +13,17 @@
 # Modify default IP
 sed -i 's/192.168.6.1/192.168.8.1/g' package/base-files/files/bin/config_generate
 
+# ==============================
+# 设置默认 WiFi 名称为 WIFI_CH
+# ==============================
+sed -i 's/^option ssid.*/option ssid WIFI_CH-2.4G/' /etc/config/wireless
+sed -i 's/^option ssid.*/option ssid WIFI_CH-5G/' /etc/config/wireless
+
+# ==============================
+# 设置默认路由器密码为 password
+# ==============================
+sed -i 's/root::0:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
+sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' /etc/shadow
 
 # ---------- QModem 6.6 驱动补丁函数 ----------
 # ⭐ 修复 QMI WWAN 驱动 Linux 6.6 兼容性 (所有厂商驱动)
