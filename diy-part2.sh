@@ -27,7 +27,8 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:
 # ==============================
 # 更改主机名
 # ==============================
-sed -i "s/hostname='.*'/hostname='AE86Wrt'/g" package/base-files/files/bin/config_generate
+# sed -i "s/hostname='.*'/hostname='AE86Wrt'/g" package/base-files/files/bin/config_generate
+sed -i 's/ImmortalWrt/CudyWRT/g' package/base-files/files/bin/config_generate
 
 # ==============================
 # 加入作者信息
