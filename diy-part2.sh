@@ -164,7 +164,7 @@ sed -i -e '/^IMG_PREFIX:=/i BUILD_DATE := $(shell date +%Y%m%d)' \
 echo "🔧 Qmodem安装中..."
 ./scripts/feeds update qmodem
 ./scripts/feeds install -a -p qmodem
-./scripts/feeds update -a && ./scripts/feeds install -a
+# ./scripts/feeds update -a && ./scripts/feeds install -a
 ./scripts/feeds install -a -f -p qmodem
-./scripts/feeds update -a && ./scripts/feeds install -a
+# ./scripts/feeds update -a && ./scripts/feeds install -a
 echo "✅ Qmodem安装完成"
