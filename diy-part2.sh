@@ -16,8 +16,8 @@ sed -i 's/192.168.6.1/192.168.8.1/g' package/base-files/files/bin/config_generat
 # ==============================
 # 设置默认 WiFi 名称为 WIFI_CH
 # ==============================
-sed -i 's/ImmortalWrt-2.4G/WIFI_CH-2.4G/g' package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
-sed -i 's/ImmortalWrt-5G/WIFI_CH-2.4G/g' package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
+sed -i 's/ImmortalWrt-2.4G/WIFI_Cudy-2.4G/g' package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
+sed -i 's/ImmortalWrt-5G/WIFI_Cudy-5G/g' package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
 
 # ==============================
 # 设置默认路由器密码为 password
