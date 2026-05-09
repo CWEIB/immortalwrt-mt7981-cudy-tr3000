@@ -160,3 +160,11 @@ sed -i -e '/^IMG_PREFIX:=/i BUILD_DATE := $(shell date +%Y%m%d)' \
 
 # set ubi to 122M
 # sed -i 's/reg = <0x5c0000 0x7000000>;/reg = <0x5c0000 0x7a40000>;/' target/linux/mediatek/dts/mt7981b-cudy-tr3000-v1-ubootmod.dts
+
+echo "🔧 Qmodem安装中..."
+./scripts/feeds update qmodem
+./scripts/feeds install -a -p qmodem
+./scripts/feeds update -a && ./scripts/feeds install -a
+./scripts/feeds install -a -f -p qmodem
+./scripts/feeds update -a && ./scripts/feeds install -a
+echo "✅ Qmodem安装完成"
