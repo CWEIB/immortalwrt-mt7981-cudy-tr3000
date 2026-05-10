@@ -90,33 +90,7 @@ sed -i 's/ImmortalWrt/CudyWRT/g' package/base-files/files/bin/config_generate
 #      echo "✅ 驱动修复完成: $SOURCE_FILE"
 #   fi
 # }
-# fix_qmi_driver() {
-#   local SOURCE_FILE="$1"
-#   if [ -f "$SOURCE_FILE" ]; then
-#     echo "🔧 修复驱动: $SOURCE_FILE"
-
-#     # 1. u64_stats API 修复
-#     sed -i 's/u64_stats_fetch_begin_irq/u64_stats_fetch_begin/g' "$SOURCE_FILE"
-#     sed -i 's/u64_stats_fetch_retry_irq/u64_stats_fetch_retry/g' "$SOURCE_FILE"
-
-#     # 2. 修 memcpy(dev_addr)
-#     sed -i 's/memcpy[[:space:]]*(\([^,]*\)->dev_addr,[[:space:]]*\([^,]*\),[[:space:]]*ETH_ALEN);/eth_hw_addr_set(\1, \2);/g' "$SOURCE_FILE" 2>/dev/null || true
-
-#     # 3. ⭐⭐关键修复：在 alloc_etherdev 后强制设置 MAC⭐⭐
-#     if grep -q "alloc_etherdev" "$SOURCE_FILE"; then
-#       sed -i '/alloc_etherdev/a\
-# \ \ \ \ eth_hw_addr_random(net);' "$SOURCE_FILE"
-#       echo "$(date '+%F %T') [MAC-INIT-FIX] Insert eth_hw_addr_random after alloc_etherdev in: $SOURCE_FILE"
-#     fi
-
-#     # 4. 确保包含头文件
-#     if ! grep -q "etherdevice.h" "$SOURCE_FILE"; then
-#       sed -i '1i #include <linux/etherdevice.h>' "$SOURCE_FILE"
-#     fi
-
-#     echo "✅ 驱动修复完成: $SOURCE_FILE"
-#   fi
-# }
+#
   
 # # 修复 Fibocom QMI WWAN 驱动
 # fix_qmi_driver "package/mtk/applications/5g-modem/fibocom_QMI_WWAN/qmi_wwan_f.c"
